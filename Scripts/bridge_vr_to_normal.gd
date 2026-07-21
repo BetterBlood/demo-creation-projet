@@ -1,0 +1,23 @@
+extends XRController3D
+
+class_name XRBridgeController3D
+
+var action_states: Dictionary = {}
+
+func _process(_delta):
+	_bridge_action("jump", "jump")
+
+
+func _bridge_action(xr_action_name: String, input_map_name: String):
+	if not action_states.has(xr_action_name):
+		action_states[xr_action_name] = false
+	
+	var is_pressed_now = is_button_pressed(xr_action_name)
+	var was_pressed_before = action_states[xr_action_name]
+	
+	if is_pressed_now and not was_pressed_before:
+		Input.action_press(input_map_name)
+		action_states[xr_action_name] = true
+	elif not is_pressed_now and was_pressed_before:
+		Input.action_release(input_map_name)
+		action_states[xr_action_name] = false

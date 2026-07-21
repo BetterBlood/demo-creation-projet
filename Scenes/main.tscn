@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://0q0oiaxr3bab"]
+
+[ext_resource type="Script" uid="uid://dwggkwpfvs51t" path="res://Scripts/main.gd" id="1_8gbba"]
+[ext_resource type="Script" uid="uid://y6oiqh4t13o" path="res://Scripts/premier_script.gd" id="1_jjgbg"]
+[ext_resource type="Script" uid="uid://60f0exiwchg3" path="res://Scripts/bridge_vr_to_normal.gd" id="2_bo1nx"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7u77a"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_jjgbg"]
+sky_material = SubResource("ProceduralSkyMaterial_7u77a")
+
+[sub_resource type="Environment" id="Environment_bo1nx"]
+background_mode = 2
+sky = SubResource("Sky_jjgbg")
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7u77a"]
+albedo_color = Color(0.632495, 0.29516813, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7u77a"]
+material = SubResource("StandardMaterial3D_7u77a")
+size = Vector3(10, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jjgbg"]
+size = Vector3(10, 0.5, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jjgbg"]
+albedo_color = Color(0.5921569, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_bo1nx"]
+material = SubResource("StandardMaterial3D_jjgbg")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8gbba"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bo1nx"]
+albedo_color = Color(0, 0.7251751, 5.7756904e-07, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_8gbba"]
+material = SubResource("StandardMaterial3D_bo1nx")
+radius = 0.1
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jjvhh"]
+albedo_color = Color(0.8357183, 3.2247603e-06, 7.70092e-07, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_kry3j"]
+material = SubResource("StandardMaterial3D_jjvhh")
+radius = 0.1
+height = 0.2
+
+[node name="Main" type="Node3D" unique_id=503822302]
+script = ExtResource("1_8gbba")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=177531143]
+environment = SubResource("Environment_bo1nx")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=82984139]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1935871282]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=359891243]
+mesh = SubResource("BoxMesh_7u77a")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1308725248]
+shape = SubResource("BoxShape3D_jjgbg")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=276713892]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0354195, 0)
+script = ExtResource("1_jjgbg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D" unique_id=1339661222]
+visible = false
+mesh = SubResource("CapsuleMesh_bo1nx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=371953302]
+shape = SubResource("CapsuleShape3D_8gbba")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" unique_id=1882776023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72369194, 0)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="CharacterBody3D" unique_id=484026110]
+
+[node name="XRController3D_Left" type="XRController3D" parent="CharacterBody3D/XROrigin3D" unique_id=1232225861]
+tracker = &"left_hand"
+pose = &"grip"
+script = ExtResource("2_bo1nx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D/XROrigin3D/XRController3D_Left" unique_id=1891381692]
+mesh = SubResource("SphereMesh_8gbba")
+
+[node name="XRController3D_Right" type="XRController3D" parent="CharacterBody3D/XROrigin3D" unique_id=128426735]
+tracker = &"right_hand"
+pose = &"grip"
+script = ExtResource("2_bo1nx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D/XROrigin3D/XRController3D_Right" unique_id=1997261699]
+mesh = SubResource("SphereMesh_kry3j")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="CharacterBody3D/XROrigin3D" unique_id=1578721156]
