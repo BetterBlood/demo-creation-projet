@@ -60,11 +60,15 @@ func _physics_process(delta: float) -> void:
 			head.rotate_x(deg_to_rad(-joystick_v_event.get_axis_value() * right_stick_sensitivity_v))
 			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 	
-	directionnalInputs = Vector3(0,0,0)
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var input_dir := Input.get_vector("left", "right", "forward", "backward")
+	directionnalInputs.x = input_dir.x
+	directionnalInputs.z = input_dir.y
+	
 	var direction: Vector3 = Vector3()
 	
 	if xr_interface and xr_interface.is_initialized():
-		var xr_move = $XROrigin3D/LeftController.get_vector2("move")
+		var xr_move = $XROrigin3D/XRController3D_Left.get_vector2("move")
 		directionnalInputs.x = xr_move.x
 		directionnalInputs.z = -xr_move.y
 		
@@ -83,16 +87,6 @@ func _physics_process(delta: float) -> void:
 	if direction.z:
 		velocity.z = direction.z * SPEED
 	else:
-		velocity.z = move_toward(velocity.z, 0, SPEED)
-	
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var input_dir := Input.get_vector("left", "right", "forward", "backward")
-	direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 	
 	move_and_slide()
